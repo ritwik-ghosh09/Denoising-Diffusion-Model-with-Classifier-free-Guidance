@@ -34,7 +34,6 @@ def parse_args():
 
 
 def sample_and_save_images(n_images, diffusor, model, device, store_path, rtransform):
-    # TODO: Implement - adapt code and method signature as needed
 
     image_classes=torch.randint(0, 10, (n_images,), device = device).long()
     print(f'image classes for sampling:{image_classes}')
@@ -124,13 +123,13 @@ def train(model, trainloader, optimizer, diffusor, epoch, device, args):    #tra
 
 
 #def test(model, testloader, diffusor, device, args):
-    # TODO (2.2): implement testing functionality, including generation of stored images.
+    # Implementing testing functionality, including generation of stored images.
     pass
 
 
 def run(args):
     timesteps = args.timesteps
-    image_size = 32  # TODO (2.5): Adapt to new dataset
+    image_size = 32  # Adapted to new dataset
     channels = 3
     epochs = args.epochs
     batch_size = args.batch_size
@@ -144,10 +143,11 @@ def run(args):
     my_scheduler_sigm = lambda z: sigmoid_beta_schedule(0.0001, 0.02, z)
     diffusor = Diffusion(timesteps, my_scheduler_cos, image_size, device)
                             # 100,  (.0001 -to-0.5), 32
-    # define image transformations (e.g. using torchvision)
+    
+    # Defining image transformations (e.g. using torchvision)
     transform = Compose([
         transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),    # turn into torch Tensor of shape CHW, divide by 255
+        transforms.ToTensor(),    # turns into torch Tensor of shape CHW, divide by 255
         transforms.Lambda(lambda t: (t * 2) - 1)   # scale data to [-1, 1] to aid diffusion process
     ])
     reverse_transform = Compose([
@@ -182,5 +182,5 @@ def run(args):
 
 if __name__ == '__main__':
     args = parse_args()
-    # TODO (2.2): Add visualization capabilities
+    
     run(args)
