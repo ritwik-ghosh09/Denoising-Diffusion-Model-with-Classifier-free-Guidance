@@ -7,7 +7,6 @@ from ex02_helpers import *
 from abc import abstractmethod
 
 
-# Note: This code employs large parts of the following sources:
 # Niels Rogge (nielsr) & Kashif Rasul (kashif): https://huggingface.co/blog/annotated-diffusion (last access: 23.05.2023),
 # which is based on
 # Phil Wang (lucidrains): https://github.com/lucidrains/denoising-diffusion-pytorch (last access: 23.05.2023)
@@ -180,7 +179,6 @@ class PreNorm(nn.Module):
         return self.fn(x)
 
 
-# TODO: make yourself familiar with the code that is presented here, as it closely interacts with the rest of the exercise.
 class Unet(nn.Module):
     def __init__(
         self,
@@ -190,13 +188,13 @@ class Unet(nn.Module):
         dim_mults=(1, 2, 4, 8),     #dimension multipliers
         channels=3,
         resnet_block_groups=4,
-        class_free_guidance=False,  # TODO: Incorporate in your code
+        class_free_guidance=False,  
         p_uncond=None,
         num_classes=None,
     ):
         super().__init__()
 
-        # determine dimensions
+        # determining dimensions
         self.channels = channels
         input_channels = channels   # adapted from the original source
         self.class_free_guidance = class_free_guidance
@@ -221,7 +219,7 @@ class Unet(nn.Module):
             nn.Linear(time_dim, time_dim),      # returns (batch, time_dim)
         )
 
-        # TODO: Implement a class embedder for the conditional part of the classifier-free guidance & define a default
+        # Implementing a class embedder for the conditional part of the classifier-free guidance & defining a default
         self.classes_emb = nn.Embedding(num_classes, dim)
         self.null_classes_emb = nn.Parameter(torch.randn(dim))
         classes_dim = dim * 4 if class_free_guidance is not False else 0
@@ -237,7 +235,7 @@ class Unet(nn.Module):
         self.ups = nn.ModuleList([])
         num_resolutions = len(in_out)       # 4 resolutions for encoding as well as decoding
 
-        # TODO: Adapt all blocks accordingly such that they can accommodate a class embedding as well
+        # Adapting all blocks accordingly such that they can accommodate a class embedding as well
         for ind, (dim_in, dim_out) in enumerate(in_out):  # in_out = [ (init_dim, 32), (32, 64), (64, 128), (128, 256) ]
             is_last = ind >= (num_resolutions - 1)
 
@@ -290,7 +288,7 @@ class Unet(nn.Module):
 
         t = self.time_mlp(time)     # t.shape = (batch, time_dim),   where time_dim = 4 * img_size
 
-        # TODO: Implement the class conditioning
+        # Implementing the class conditioning
 
 
 #  - for each element in the batch, the class embedding is replaced with the null token with a certain probability during training
@@ -314,7 +312,7 @@ class Unet(nn.Module):
                 null_classes_emb
             )
 
-        #  - during testing, you need to have control over whether the conditioning is applied or not
+        
         c = self.classes_mlp(classes_emb)
 
 
